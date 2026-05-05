@@ -8,7 +8,7 @@ function cookieOptions(req) {
   const isProd = req.app.get("env") === "production";
   return {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: isProd ? "none" : "lax",
     secure: isProd,
     path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000
