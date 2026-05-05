@@ -11,6 +11,7 @@ import { notFound } from "./middleware/notFound.js";
 export function createApp({ clientOrigin, jwtSecret } = {}) {
   const app = express();
 
+  app.set("trust proxy", 1);
   app.set("jwtSecret", jwtSecret);
 
   app.use(morgan("dev"));

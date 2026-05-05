@@ -5,11 +5,14 @@ import { hashPassword, verifyPassword } from "../services/passwordService.js";
 import { loginSchema, registerSchema } from "../validators/authSchemas.js";
 
 function cookieOptions(req) {
-  const isProd = req.app.get("env") === "production";
+  const origin = req.headers.origin || "";
+  const isLocalhost = origin.includes("localhost") || origin.includes("127.0.0.1");
+  const isCrossDomain = !isLocalhost;
+
   return {
     httpOnly: true,
-    sameSite: isProd ? "none" : "lax",
-    secure: isProd,
+    sameSite: isCrossDomain ? "none" : "lax",
+    secure: isCrossDomain,
     path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000
   };
