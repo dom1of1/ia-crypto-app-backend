@@ -17,10 +17,25 @@ export function createApp({ clientOrigin, jwtSecret } = {}) {
   app.use(express.json({ limit: "1mb" }));
   app.use(cookieParser());
 
+  const allowedOrigins = clientOrigin
+    ? clientOrigin.split(",").map((o) => o.trim().replace(/\/$/, ""))
+    : [];
+
+  if (!allowedOrigins.includes("http://localhost:5173")) {
+    allowedOrigins.push("http://localhost:5173");
+  }
+
   app.use(
     cors({
-      origin: clientOrigin ? [clientOrigin] : true,
-      credentials: true
+      origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      },
+      credentials: true,
     })
   );
 
